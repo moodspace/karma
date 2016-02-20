@@ -7,16 +7,13 @@ module.exports = function scan(dir, alias){
 		name: alias,
 		type: 'folder',
 		path: alias,
-		items: walk(dir, alias)
+		items: walk(dir, alias, dir)
 	};
 
 };
 
 
-function walk(dir, prefix){
-
-	prefix = prefix || '';
-
+function walk(dir, root, prefix){
 	if(!fs.existsSync(dir)){
 		return [];
 	}
@@ -27,16 +24,15 @@ function walk(dir, prefix){
 
 	}).map(function(f){
 
-		var p = (dir + '/' + f).replace('./', ''),
+		var p = (dir + '/' + f),
 			stat = fs.statSync(p);
-
 		if(stat.isDirectory()){
 
 			return {
 				name: f,
 				type: 'folder',
-				path: prefix + '/' + p,
-				items: walk(p, prefix)
+				path: root + p.replace(prefix, ''),
+				items: walk(p, root, prefix)
 			};
 
 		}
@@ -44,7 +40,7 @@ function walk(dir, prefix){
 		return {
 			name: f,
 			type: 'file',
-			path: prefix + '/' + p,
+			path: root + p.replace(prefix, ''),
 			size: stat.size
 		}
 

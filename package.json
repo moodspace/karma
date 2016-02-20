@@ -1,37 +1,38 @@
 {
-  "name": "cute-files",
-  "version": "1.0.2",
-  "description": "Turn any folder on your computer into a cute file browser, available on the local network.",
-  "main": "cute-files.js",
+  "name": "karma",
+  "version": "0.0.1",
+  "description": "Web-based static file managing interface, written with Node and Express.",
+  "main": "karma.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "cute",
+    "karma",
     "file",
-    "browser",
+    "manager",
+    "explorer",
     "files"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/martinaglv/cute-files"
+    "url": "git+https://github.com/moodspace/karma.git"
   },
-  "author": {
-    "name": "Martin Angelov",
-    "email": "martin@tutorialzine.com"
-  },
+  "author": "MoodSpace <qianke95@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "commander": "^2.3.0",
-    "content-disposition": "^0.3.0",
-    "express": "^4.9.4"
+    "commander": "^2.9.0",
+    "content-disposition": "^0.5.1",
+    "express": "^4.13.4"
   },
   "preferGlobal": true,
   "bin": {
-    "cute-files": "cute-files.js"
+    "karma": "karma.js"
   },
-  "readmeFilename": "Readme.md",
   "engines": {
     "node": ">= 0.10.x"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/moodspace/karma/issues"
+  },
+  "homepage": "https://github.com/moodspace/karma#readme"
 }

@@ -19,10 +19,10 @@ $(function(){
 		// capture back/forward navigation in the browser.
 
 		$(window).on('hashchange', function(){
-
+			$('.modal').remove();
 			goto(window.location.hash);
 
-			// We are triggering the event. This will execute 
+			// We are triggering the event. This will execute
 			// this function on page load, so that we show the correct folder:
 
 		}).trigger('hashchange');
@@ -129,8 +129,7 @@ $(function(){
 
 			var index = breadcrumbs.find('a').index($(this)),
 				nextDir = breadcrumbsUrls[index];
-
-			breadcrumbsUrls.length = Number(index);
+		  breadcrumbsUrls.length = Number(index)+1;
 
 			window.location.hash = encodeURIComponent(nextDir);
 
@@ -312,7 +311,7 @@ $(function(){
 						itemsLength = 'Empty';
 					}
 
-					var folder = $('<li class="folders"><a href="'+ f.path +'" title="'+ f.path +'" class="folders">'+icon+'<span class="name">' + name + '</span> <span class="details">' + itemsLength + '</span></a></li>');
+					var folder = $('<li class="folders card"><a href="'+ f.path +'" title="'+ f.path +'" class="folders">'+icon+'<span class="name">' + name + '</span> <span class="details">' + itemsLength + '</span></a></li>');
 					folder.appendTo(fileList);
 				});
 
@@ -320,8 +319,8 @@ $(function(){
 
 			if(scannedFiles.length) {
 
-				scannedFiles.forEach(function(f) {
-
+				scannedFiles.forEach(function(f, index) {
+					var indexRand = index + Math.random().toString().replace('.', '');
 					var fileSize = bytesToSize(f.size),
 						name = escapeHTML(f.name),
 						fileType = name.split('.'),
@@ -331,8 +330,95 @@ $(function(){
 
 					icon = '<span class="icon file f-' + fileType + '">' + fileType + '</span>';
 
-					var file = $('<li class="files"><a href="'+ f.path+'" title="'+ f.path +'" class="files">'+icon+'<span class="name">'+ name +'</span> <span class="details">'+fileSize+'</span></a></li>');
+					var file = $(
+						'<li class="files card">'+
+						'<div title="'+ f.path +'" class="files">'+icon+
+						'<span class="name">'+ name +'</span> <span class="details">'+
+						fileSize+'</span></div>' +
+						'</li>'
+					);
+					var modal;
+
+					var extension = f.path.toLowerCase().split(".");
+					extension = extension[extension.length-1];
+					if (["png", "jpg", "jpeg"].indexOf(extension) > -1) {
+						modal = $(
+							'<div id="modal'+indexRand+'" class="modal">' +
+							'<div class="modal-content" '+
+									 'style="background-image: url(\''+f.path+'\'); '+
+									 'background-repeat: no-repeat; overflow: hidden; '+
+									 'margin: 5vh; min-height: 50vh; background-size: contain; '+
+									 'background-position: center;">' +
+					    '</div>'+
+	    				'<div class="modal-footer">'+
+	      				'<div class=" modal-action modal-close waves-effect waves-red btn-flat">Close</div>'+
+	      				'<a href="' + f.path + '" class=" modal-action modal-close waves-effect waves-green btn-flat">Download</a>'+
+						  '</div>'+
+						  '</div>'
+						);
+					} else if (["wmv", "mkv", "mp4", "webm", "ogv", "aac", "mp3", "ogg", "wav"].indexOf(extension) > -1) {
+						modal = $(
+							'<div id="modal'+indexRand+'" class="modal">' +
+							'<div class="modal-content" '+
+									 'style="background-repeat: no-repeat; overflow: hidden; '+
+									 'margin: 5vh; min-height: 50vh; background-size: contain; '+
+									 'background-position: center; text-align: center;">' +
+								'<video id="vbox'+indexRand+'" class="video-js vjs-fluid vjs-default-skin" controls preload="auto" data-setup=\'{}\'>' +
+								  '<source src="'+f.path+'" type="video/webm">' +
+								'</video>' +
+					    '</div>'+
+	    				'<div class="modal-footer">'+
+	      				'<div class=" modal-action modal-close waves-effect waves-red btn-flat">Close</div>'+
+	      				'<a href="' + f.path + '" class=" modal-action modal-close waves-effect waves-green btn-flat">Download</a>'+
+						  '</div>'+
+						  '</div>'
+						);
+					} else {
+						modal = $(
+							'<div id="modal'+indexRand+'" class="modal">' +
+							'<div class="modal-content" '+
+									 'style="background-image: url(\''+f.path+'\'); '+
+									 'background-repeat: no-repeat; overflow: hidden; '+
+									 'margin: 5vh; min-height: 50vh; background-size: contain; '+
+									 'background-position: center;"><div id="codebox'+indexRand+'" style="font-family: monospace; white-space: pre-wrap;"></div>' +
+					    '</div>'+
+	    				'<div class="modal-footer">'+
+	      				'<div class=" modal-action modal-close waves-effect waves-red btn-flat">Close</div>'+
+	      				'<a href="' + f.path + '" class=" modal-action modal-close waves-effect waves-green btn-flat">Download</a>'+
+						  '</div>'+
+						  '</div>'
+						);
+					}
+
+					// add file tile
 					file.appendTo(fileList);
+
+					// add modal
+					modal.appendTo($('body'));
+
+					// init player
+          if (["wmv", "mkv", "mp4", "webm", "ogv", "aac", "mp3", "ogg", "wav"].indexOf(extension) > -1) {
+		        videojs('vbox'+indexRand, {}, function(){
+
+		        });
+					}
+
+					// add preview trigger
+					file.on("click", function() {
+						// enable syntax highlight if plain text
+						if (["png", "jpg", "jpeg", "wmv", "mkv", "mp4", "webm", "ogv", "aac", "mp3", "ogg", "wav"].indexOf(extension) === -1) {
+							$.get(f.path, function(data) {
+							  $('#codebox'+indexRand).text(data);
+								$('#codebox'+indexRand).each(function(i, block) {
+								  hljs.highlightBlock(block);
+								});
+							}, 'text');
+						}
+
+						// show modal for all
+						$('#modal'+ indexRand).openModal();
+					});
+
 				});
 
 			}
@@ -349,22 +435,23 @@ $(function(){
 
 			}
 			else {
+				// Rewrite using materialcss
 
 				fileList.addClass('animated');
 
-				breadcrumbsUrls.forEach(function (u, i) {
-
-					var name = u.split('/');
-
-					if (i !== breadcrumbsUrls.length - 1) {
-						url += '<a href="'+u+'"><span class="folderName">' + name[name.length-1] + '</span></a> <span class="arrow">→</span> ';
+				var name = breadcrumbsUrls[breadcrumbsUrls.length-1].split('/');
+				name.forEach(function(u, i) {
+					if (i === 0) {
+						// root
+						url += '<a href="'+breadcrumbsUrls[i]+'" class="breadcrumb"><i class="material-icons">home</i></a>';
+					} else if (i !== name.length-1) {
+						// mid
+						url += '<a href="'+breadcrumbsUrls[i]+'" class="breadcrumb">' + name[i] + '</a>';
+					} else {
+						// current
+						url += '<span class="breadcrumb">' + name[i] + '</span>';
 					}
-					else {
-						url += '<span class="folderName">' + name[name.length-1] + '</span>';
-					}
-
 				});
-
 			}
 
 			breadcrumbs.text('').append(url);
