@@ -4,7 +4,8 @@ This is a Node.js command line utility that provides a web frontend to display f
 
 ## Design and inspiration
 
-Based on [martinaglv's cute-files explorer](https://github.com/martinaglv/cute-files).
+Based on [martinaglv's cute-files explorer](https://github.com/martinaglv/cute-files). 
+Check out this [demo](https://glassroom.xyz/karma_demo/).
 
 **Features:**
 
