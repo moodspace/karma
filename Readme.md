@@ -1,10 +1,10 @@
 # Karma
 
-This is a node.js command line utility that turns the current working directory into a pretty online file browser, available to all computers in the local network. It is an easy way to share a folder with your office buddies.
+This is a Node.js command line utility that provides a web frontend to display files in a directory. It is a perfect way to serve and manage static files.
 
 ## Design and inspiration
 
-It is based on [martinaglv's cute-files explorer](https://github.com/martinaglv/cute-files).
+Based on [martinaglv's cute-files explorer](https://github.com/martinaglv/cute-files).
 
 **Features:**
 
@@ -26,7 +26,7 @@ and run `karma` from CLI.
 
 ### Examples
 
-Make the current folder available on `<yourip>:3000` on the local network:
+Make the current folder available on `<yourip>:15595` on the local network:
 
 ```bash
 karma
