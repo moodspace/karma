@@ -373,7 +373,7 @@ $(function(){
 						  '</div>'+
 						  '</div>'
 						);
-					} else {
+					} else if (["txt", "java", "c", "cpp", "h", "py", "js", "html", "css", "xml", "json", "md", "log"].indexOf(extension) > -1) {
 						modal = $(
 							'<div id="modal'+indexRand+'" class="modal">' +
 							'<div class="modal-content" '+
@@ -381,6 +381,18 @@ $(function(){
 									 'background-repeat: no-repeat; overflow: hidden; '+
 									 'margin: 5vh; min-height: 50vh; background-size: contain; '+
 									 'background-position: center;"><div id="codebox'+indexRand+'" style="font-family: monospace; white-space: pre-wrap;"></div>' +
+					    '</div>'+
+	    				'<div class="modal-footer">'+
+	      				'<div class=" modal-action modal-close waves-effect waves-red btn-flat">Close</div>'+
+	      				'<a href="' + f.path + '" class=" modal-action modal-close waves-effect waves-green btn-flat">Download</a>'+
+						  '</div>'+
+						  '</div>'
+						);
+					} else {
+						modal = $(
+							'<div id="modal'+indexRand+'" class="modal">' +
+							'<div class="modal-content" style="overflow: hidden; margin: 5vh; min-height: 50vh; text-align: center;">'+
+								'<iframe width="480" height="360" src="https://www.kickstarter.com/projects/cyanideandhappiness/joking-hazard/widget/video.html" frameborder="0" scrolling="no"> </iframe>' +
 					    '</div>'+
 	    				'<div class="modal-footer">'+
 	      				'<div class=" modal-action modal-close waves-effect waves-red btn-flat">Close</div>'+
@@ -406,7 +418,7 @@ $(function(){
 					// add preview trigger
 					file.on("click", function() {
 						// enable syntax highlight if plain text
-						if (["png", "jpg", "jpeg", "wmv", "mkv", "mp4", "webm", "ogv", "aac", "mp3", "ogg", "wav"].indexOf(extension) === -1) {
+						if (["txt", "java", "c", "cpp", "h", "py", "js", "html", "css", "xml", "json", "md", "log"].indexOf(extension) !== -1) {
 							$.get(f.path, function(data) {
 							  $('#codebox'+indexRand).text(data);
 								$('#codebox'+indexRand).each(function(i, block) {
