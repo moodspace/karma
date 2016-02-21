@@ -22,6 +22,10 @@ var port = program.port || 15595;
 var ROOTDIR = './static';
 var ROOTALIAS = 'cloud';
 
+var bingUrl = {expire: (new Date()).getTime() + 86400000};
+
+console.log('Next bing wallpaper available at ' + bingUrl.expire);
+
 // Scan ROOTDIR in which the static files are located. Then add ROOTALIAS to all
 // files and folders, so that download links point to our ROOTALIAS route
 
@@ -57,21 +61,32 @@ app.get('/scan', function(req,res){
 // Bing proxy for background wallpaper
 
 app.get('/wallpaper', function(req,res){
-  var url = 'http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US';
-  http.get(url, function(resBing){
-    var body = '';
+  if ((new Date()).getTime() < bingUrl.expire && bingUrl.url) {
+    res.redirect(bingUrl.url);
+  } else {
+    var url = 'http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US';
+    http.get(url, function(resBing){
+      var body = '';
 
-    resBing.on('data', function(chunk){
+      resBing.on('data', function(chunk){
         body += chunk;
-    });
+      });
 
-    resBing.on('end', function(){
+      resBing.on('end', function(){
         var data = JSON.parse(body);
-        res.redirect('https://www.bing.com' + data.images[0].url);
+        bingUrl = {
+          url: 'https://www.bing.com' + data.images[0].url,
+          expire: (new Date()).getTime() + 86400000
+        };
+        res.redirect(bingUrl.url);
+      });
+    }).on('error', function(e){
+      bingUrl = {
+        expire: (new Date()).getTime() + 86400000
+      };
+      res.redirect('/');
     });
-  }).on('error', function(e){
-        res.redirect('/');
-  });
+  }
 });
 
 // Everything is setup. Listen on the port.
